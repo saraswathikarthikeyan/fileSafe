@@ -1,0 +1,19 @@
+<div class="logincontainer">
+
+<form [formGroup]="loginFG" (ngSubmit) ="onSubmit()" >
+  <h1>Login</h1>
+  <p *ngIf="errorMessage" class="txtError">{{errorMessage}}</p>
+<div class="formrow">
+    <label for="username" class="formlabel">User Name</label>
+    <input type="text" formControlName="username" placeholder="User Name" id="userName" class="formtextBox" required>
+</div>
+<div class="formrow">
+    <label for="password" class="formlabel">Password</label>
+    <input type="text" formControlName="password" placeholder="Password" id="password"  class="formtextBox" required>
+</div>
+<div class="formrow">
+
+  <button type="submit" [disabled]="loginFG.invalid"  class="formloginBtn">Submit</button>
+</div>
+</form>
+</div>  

@@ -1,0 +1,11 @@
+<div class="uploadcontainer">
+
+<form [formGroup]="uploadFG" (ngSubmit) ="onUploadSubmit()">
+  <div>
+    <label>{{ errorMessage }}</label>
+  </div>
+  <label for="uploadfile" >Upload File</label>
+  <input type="file" (change) ="onFileChange($event)"  name="uploadfile" id="uploadfile">
+  <button type="submit"  >Upload</button>
+</form>
+</div>

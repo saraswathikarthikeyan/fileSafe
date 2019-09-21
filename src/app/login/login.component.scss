@@ -1,0 +1,36 @@
+* {
+    font-family: 'Lato', sans-serif;
+}
+
+.logincontainer{
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+    border: 0px solid green;
+}
+
+.formrow {
+    margin: 10px;
+    display: flex;
+    flex-flow: row;
+    border: 0px solid red;
+    flex-basis: 25%;
+    flex-grow: 0;
+}
+
+.formtextBox {
+    margin: 10px;      
+}
+
+.formlabel {
+    margin: 10px;width:50%;
+}
+
+.formloginBtn {
+    margin: 10px;
+}
+
+h2 {
+    color: green;
+    margin: 10px;
+}
