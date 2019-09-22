@@ -8,7 +8,7 @@ import { from } from 'rxjs';
 
 const routes: Routes = [
   { path:'login', component:LoginComponent },
-  { path:'fileupload', component:FileuploadComponent,canActivate : [AuthGuard] },
+  { path:'fileupload', component:FileuploadComponent /* ,canActivate : [AuthGuard] */ },
   { path:'', redirectTo:'/login', pathMatch:'full' },
   
 ];

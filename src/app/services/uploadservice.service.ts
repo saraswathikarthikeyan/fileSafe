@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient ,HttpHeaders, HttpErrorResponse, HttpEventType } from '@angular/common/http';
-import { Observable,of,throwError } from 'rxjs';
+import { Observable,of,throwError, observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { promise } from 'protractor';
 const uploadURL="http://localhost:3000/upload";
 
 @Injectable({
@@ -10,30 +11,6 @@ const uploadURL="http://localhost:3000/upload";
 export class UploadserviceService {
 
   constructor(private http:HttpClient) { }
-
-  /*public upload(data) {
-
-    let uploadURL:"http://localhost:8000/upload";
-
-    return this.http.post<any>(uploadURL, data, {
-      reportProgress: true,
-      observe: 'events'
-    }).pipe(map((event) => {
-
-      switch (event.type) {
-
-        case HttpEventType.UploadProgress:
-          const progress = Math.round(100 * event.loaded / event.total);
-          return { status: 'progress', message: progress };
-
-        case HttpEventType.Response:
-          return event.body;
-        default:
-          return `Unhandled event: ${event.type}`;
-      }
-    })
-    );
-}*/
 
 public handleError(error: HttpErrorResponse | any) {
 
@@ -58,8 +35,11 @@ console.log('meethod is called',Data);
     })
   };
 
-  return this.http.post<string>(uploadURL, Data, httpOptions).pipe(map((data) => {return data }))
+ return this.http.post<string>(uploadURL, Data, httpOptions).pipe(map((data) => {return data }))
   .pipe(catchError(this.handleError));
+
 }
+
+
 
 }

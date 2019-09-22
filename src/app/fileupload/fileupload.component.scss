@@ -1,10 +1,13 @@
 .uploadcontainer{
     display: flex;
-    flex-flow: row;
+    flex-flow: column;
     align-items: flex-start;
     border: 0px solid green;
 }
 
 input{
     margin: 20px;
+}
+.container{
+    padding:10px;
 }

@@ -1,11 +1,24 @@
 <div class="uploadcontainer">
-
-<form [formGroup]="uploadFG" (ngSubmit) ="onUploadSubmit()">
+<div class="container"  >
+  <h4 *ngIf="cacheM?.length>0" > Uploaded Files</h4>
+  <ul>
+    <li *ngFor="let fileFrom of cacheM | keyvalue"> 
+     <a href="#" (click) = "openFile(fileFrom.value)" target="_blank"> {{ fileFrom.key }} </a>
+    </li>    
+   </ul>
+</div>
+<div class="container">
+<form [formGroup]="uploadFG" id='uploadForm'  (ngSubmit) ="onUploadSubmit()">
   <div>
     <label>{{ errorMessage }}</label>
   </div>
   <label for="uploadfile" >Upload File</label>
-  <input type="file" (change) ="onFileChange($event)"  name="uploadfile" id="uploadfile">
-  <button type="submit"  >Upload</button>
+  <input matInput type="file" (change) ="onFileChange($event)"  #uploadfile id="uploadfile">
+  <mat-error *ngIf= ""></mat-error>
+  <button type="submit" id='btnUpload' name="btnUpload" >Upload</button>  
+ 
+
 </form>
+</div>
+
 </div>
