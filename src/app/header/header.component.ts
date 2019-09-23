@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { LoginService } from '../services/login.service';
+import { AuthGuard } from '../auth.guard';
 import { AutologoutService } from '../services/autologout.service';
-  
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -9,14 +9,20 @@ import { AutologoutService } from '../services/autologout.service';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-
-  constructor(private loginService:LoginService,private autoLogout:AutologoutService) { }
+  loginLabel:string = "Login";
+  constructor(private router:Router , private authGuard:AuthGuard,private autoLogout:AutologoutService) { }
 
   ngOnInit() {
+    this.authGuard.cast.subscribe( (loginstatus) => { this.loginLabel = loginstatus } );   
   }
 
-  onLoguout(){
-    this.autoLogout.clearSubscribeLogout();
-    //this.loginService.logout();
+  
+  loginToggle(){
+    if(!this.authGuard.isLoggedIn) {
+      this.router.navigate(['./login']); 
+    }
+    else { 
+      this.autoLogout.clearSubscribeLogout();
+    }
   }
 }

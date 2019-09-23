@@ -1,0 +1,22 @@
+/* Header/Logo Title */
+.header {
+    display: flex;
+    flex-direction: column;
+    padding: 60px;
+    text-align: center;
+   // background: #1abc9c;
+    background:black;
+    color: hsl(54, 94%, 52%);
+    font-size: 22px;
+    border:0px solid red;
+  }
+  .logout {
+    align-content: center;
+  }
+  
+ a {
+      float: right;
+      color:  hsl(54, 94%, 52%);
+      font-size: 18px;
+      text-decoration: none;
+  }

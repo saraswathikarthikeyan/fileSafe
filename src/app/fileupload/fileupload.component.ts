@@ -1,8 +1,8 @@
-import { Component, OnInit,ViewChild,ElementRef } from '@angular/core';
-import { FormGroup, FormBuilder,Validators, FormControl } from '@angular/forms';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { UploadserviceService } from '../services/uploadservice.service';
-
-import { fromEvent, Observable, Subscription,  } from 'rxjs';
+import { fromEvent, Observable, Subscription, } from 'rxjs';
+import { AutologoutService } from '../services/autologout.service';
 
 @Component({
   selector: 'app-fileupload',
@@ -11,82 +11,76 @@ import { fromEvent, Observable, Subscription,  } from 'rxjs';
 })
 export class FileuploadComponent implements OnInit {
 
-  uploadFG:FormGroup;
-  errorMessage:string;
+  uploadFG: FormGroup;
+  errorMessage: string;
   firstTime = Date.now();
-  lasttime= Date.now();
-  show:true;
-  subscription:Subscription;
+  lasttime = Date.now();
+  show: true;
+  subscription: Subscription;
 
-  @ViewChild('uploadfile', {static: false}) uUpload: ElementRef;
+  @ViewChild('uploadfile', { static: false }) uUpload: ElementRef;
 
   //Cache
-  fileSave:any;
+  fileSave: any;
   cacheM: Map<string, File> = new Map<string, File>();
-  showText:any;
+  showText: any;
 
-  constructor (private uploadFB : FormBuilder, private uploadService:UploadserviceService){ 
+  constructor(private uploadFB: FormBuilder, private uploadService: UploadserviceService, private autoLogout :AutologoutService) {
   }
 
   ngOnInit() {
-      this.createUploadForm();
-      const form = document.getElementById('uploadForm');
-
-      this.subscription = fromEvent(form , 'submit' ).subscribe((event) => {
-      this.cacheM.set(this.fileSave.name,this.fileSave);
-      this.cacheM.forEach((key,value)=>{ console.log('key:'+key,'value:'+value) });
-
+    this.createUploadForm();
+    const form = document.getElementById('uploadForm');
+    this.subscription = fromEvent(form, 'submit').subscribe((event) => {
+      if (this.fileSave) {
+        this.cacheM.set(this.fileSave.name, this.fileSave);
+        this.cacheM.forEach((key, value) => { console.log('key:' + key, 'value:' + value) });
+        this.fileSave ="";
+      }
     });
 
   }
 
-  openFile(myData)
-  {
-    const formDatasend = new FormData();
-    myData.append('file', myData);
-
-    /*let response = this.uploadService.uploadLocal(myData).subscribe(result => console.log(result),
-    errMess => { this.errorMessage= <any>errMess;} );*/
-  }
-
-  createUploadForm(): void{
-    this.uploadFG = this.uploadFB.group ({
-      uploadfile : ['', [Validators.required]] 
+  //Creates the upload form
+  createUploadForm(): void {
+    this.uploadFG = this.uploadFB.group({
+      uploadfile: ['', [Validators.required]]
     });
   }
 
+  //On file change stores the file
   onFileChange(event) {
     if (event.target.files.length > 0) {
       this.fileSave = event.target.files[0];
       this.uploadFG.get('uploadfile').setValue(this.fileSave);
-       console.log('test',this.fileSave);
+      console.log('test', this.fileSave);
     }
   }
-  
 
-  onUploadSubmit(){
 
-    if(this.uploadFG.valid) {
+  onUploadSubmit() {
 
+    if (this.uploadFG.valid) {
+      
+      this.autoLogout.reset();//resets the logout timer.
+
+      this.errorMessage ="";
       const formData = new FormData();
-      formData.append('file', this.uploadFG.get('uploadfile').value);      
+      formData.append('file', this.uploadFG.get('uploadfile').value);
       /*
       //code to send file to backend
       let response = this.uploadService.upload(formData).subscribe(result => console.log(result),
       errMess => { this.errorMessage= <any>errMess;} );*/
 
       this.uploadFG.reset(
-          {  uploadfile: [' ']  }          
+        { uploadfile: [' '] }
       );
-      this.uUpload.nativeElement.value = null;          
-      
-      //console.log(response);
-      //this.uploadService.upload(formData,localStorage.getItem('token'))
-      //console.log(formData);
+      this.uUpload.nativeElement.value = null;
+
     }
     else {
       this.errorMessage = "Incorrect file type!";
     }
-  } 
+  }
 
 }

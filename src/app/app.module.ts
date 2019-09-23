@@ -1,11 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+/*import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';*/
 
 import { AuthGuard } from './auth.guard';
 import { FormsModule, ReactiveFormsModule  } from '@angular/forms';
@@ -40,15 +40,15 @@ import { AutologoutComponent } from './autologout/autologout.component';
   ],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule,
+    
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    AppRoutingModule,
-    MatInputModule,
+    AppRoutingModule
+    /*MatInputModule,
     MatButtonModule,
     MatListModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule*/
   ],
   providers: [AuthGuard,
     AutologoutService,
@@ -57,4 +57,7 @@ UploadserviceService],
     entryComponents: [LoginComponent],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(){}
+
+ }

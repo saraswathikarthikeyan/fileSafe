@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder,FormGroup,Validators} from '@angular/forms';
-import { Login } from '../model/user';
-import { LoginService } from '../services/login.service';
+import { User } from '../model/user';
+import { AuthGuard } from '../auth.guard';
+import { LoginService} from '../services/login.service';
 import { Router } from '@angular/router';
-import { AutologoutService} from '../services/autologout.service';
-
 import { from } from 'rxjs';
 
 @Component({
@@ -15,25 +14,25 @@ import { from } from 'rxjs';
 export class LoginComponent implements OnInit {
 
   loginFG: FormGroup;
-  loginModel: Login;
+  loginModel: User;
   errorMessage:string;
-  returnUrl: string;
+  returnUrl: string = '/fileupload';
 
-  constructor(private loginFB: FormBuilder,
-    private loginService: LoginService, private router: Router, private autologout: AutologoutService ) {       
+  constructor(private loginFB: FormBuilder, public router:Router,
+    private authGuard: AuthGuard, private loginService: LoginService ) {       
+      //Method creates the Form
       this.createLoginForm();
     }
 
-  ngOnInit() {
-    this.returnUrl = '/fileupload';
-    //this.authService.logout();
+  ngOnInit() {    
   }
-
+  //Object contains the ErrorList for Form Controls
   formErrors = {
     'username': '',
     'password': ''
   };
 
+  //Validation message for Form Controls
   validationMessages = {
     'username': {
       'required':      'User Name is required.',
@@ -41,39 +40,75 @@ export class LoginComponent implements OnInit {
       'maxlength':     'User cannot be more than 25 characters long.'
     },
     'password': {
-      'required':      'Last Name is required.',
-      'minlength':     'Last Name must be at least 2 characters long.',
-      'maxlength':     'Last Name cannot be more than 25 characters long.'
+      'required':      'Password is required.',
+      'minlength':     'Password must be at least 2 characters long.',
+      'maxlength':     'Password cannot be more than 25 characters long.'
     }
   };
 
+  
   createLoginForm(): void{
     this.loginFG = this.loginFB.group ({
       username : ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]],
       password : ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]]
     });
+
+    this.loginFG.valueChanges.subscribe(data => this.onValueChanged(data));
+    this.onValueChanged(); // (re)set validation messages now
   }
 
+  //Method triggers on Value changes and check for userInput
+  onValueChanged(data?: any) {
+
+    if(!this.loginFG) {return}
+
+    const form = this.loginFG;
+    for (const field in this.formErrors)
+    {
+      if(this.formErrors.hasOwnProperty(field))
+      {
+          // clear previous error message (if any)
+          this.formErrors[field] = '';
+
+          //Gets the control
+          const control = form.get(field);
+
+          //check control is dirty or invalid
+          if(control && control.dirty && !control.valid) {
+
+            //Gets the validation error message
+            const messages = this.validationMessages[field]; 
+            for(const key in control.errors) {
+
+              //checks for formErrors Property and assigns the message value
+              if(control.errors.hasOwnProperty(key))
+              {
+                this.formErrors[field] += messages[key] + ' ';
+              }
+            }
+          }     
+        }
+      }      
+    }
+
+    //Method calls on user clicks the Login Button
   onSubmit(){
+
+    //Form group control value is assigned to the UserModel.
     this.loginModel = this.loginFG.value;
 
+    //checks form is valid  
     if(this.loginFG.valid)
     {
       console.log(this.loginModel);
 
-      if(this.loginModel.username === "saraswathi" && this.loginModel.password === "test")
-      {
-        console.log('yes');
-        //this.authService.authLogin(this.model);
-        localStorage.setItem('isLoggedIn', "true");
-        localStorage.setItem('token', this.loginModel.username);
-        this.autologout.init();
-
-        this.router.navigate([this.returnUrl]);
-      }
-      else {
-        this.errorMessage = "Incorrrect username or password";
-      }
+      //calls the service to validate the user controls
+      this.loginService.login(this.loginModel) ? this.router.navigate([this.returnUrl])  
+      : this.errorMessage = "Invalid User name or Password";
+      
+    }
+    else{
+      this.errorMessage = "Invalid User name or Password";//sets error message when login model is Invalid
     }
 
   }

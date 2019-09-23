@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoginService } from '../services/login.service';
 import { Subscription, fromEvent,from, merge, Observable  } from 'rxjs';
 import { subscribeOn } from 'rxjs/operators';
 import { TimeInterval } from 'rxjs/internal/operators/timeInterval';
+import { AuthGuard } from '../auth.guard';
 
 
 const MINUTES_UNITL_AUTO_LOGOUT = 5 // in mins
@@ -20,14 +20,17 @@ export class AutologoutService {
   handle;
 
   public getLastAction() {
-    return parseInt(localStorage.getItem(STORE_KEY));
+    return parseInt(sessionStorage.getItem(STORE_KEY));
   }
  public setLastAction(lastAction: number) {
-    localStorage.setItem(STORE_KEY, lastAction.toString());
+  sessionStorage.setItem(STORE_KEY, lastAction.toString());
   }
 
-  constructor(private router: Router,private loginservice:LoginService) { 
-        
+  constructor(private router: Router, private authGuard:AuthGuard) { 
+    this.check();
+    this.initListener();
+    this.initInterval();     
+    this.setLoginStatus();     
   }
 
   reset() {
@@ -35,7 +38,7 @@ export class AutologoutService {
   }
 
   init() {
-    localStorage.setItem('lastAction',Date.now().toString());
+    sessionStorage.setItem('lastAction',Date.now().toString());
     this.check();
     this.initListener();
     this.initInterval();
@@ -64,11 +67,11 @@ this.subscription = allEvents$.subscribe((event) => {
   this.reset();
 });
 
-this.subscription.add( fromEvent(window,'unload').subscribe(e => {this.clearSubscribeLogout()}) );
+this.subscription.add( fromEvent(window,'close').subscribe(e => { this.clearSubscribeLogout() }) );
 
-}
+}  
 
-  initInterval() {
+  initInterval() {  
    this.handle = setInterval(() => { 
       this.check();
     }, CHECK_INTERVAL);
@@ -83,22 +86,33 @@ this.subscription.add( fromEvent(window,'unload').subscribe(e => {this.clearSubs
     console.log(diff);
 
     // if (isTimeout && this.auth.loggedIn)
-    if (isTimeout)  {
-     
+    if (isTimeout)  {     
       this.clearSubscribeLogout();
     }
   }
 
   clearSubscribeLogout()
   {
-    if(localStorage.getItem('isLoggedIn') === 'true') {
+    if(this.authGuard.isLoggedIn) {
+
+      this.authGuard.editLoginStatus('Login');
      /* autologout */
      this.subscription.unsubscribe();
      clearInterval(this.handle);
-     console.log('logout');
-     localStorage.clear();
-     //this.router.navigate(['./login']);
-     this.loginservice.logout();
+     sessionStorage.clear();
+     sessionStorage.setItem('isLoggedIn', "false");
+     sessionStorage.removeItem('token');
+     this.router.navigate(['./login']);    
+    }
+  }
+
+  setLoginStatus(){
+    if(this.authGuard.isLoggedIn)
+    {
+      this.authGuard.editLoginStatus("Logout");
+    }
+    else{
+      this.authGuard.editLoginStatus("Login");
     }
   }
 }

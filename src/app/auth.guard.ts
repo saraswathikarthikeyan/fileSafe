@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Router } from '@angular/router';
-import { Observable, from } from 'rxjs';
+import { Observable, from, BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
+
+  private loginStatus = new BehaviorSubject<string>('Login');
+  cast = this.loginStatus.asObservable();
 
   constructor(private router: Router ){}
 
@@ -28,7 +31,7 @@ export class AuthGuard implements CanActivate {
 }
 public isLoggedIn(): boolean{
     let status = false;
-    if( localStorage.getItem('isLoggedIn') == "true"){
+    if( sessionStorage.getItem('isLoggedIn') == "true"){
       status = true;
     }
     else{
@@ -36,4 +39,9 @@ public isLoggedIn(): boolean{
     }
     return status;
 }
+
+public editLoginStatus(newStatus){
+  this.loginStatus.next(newStatus);
+}
+
 }

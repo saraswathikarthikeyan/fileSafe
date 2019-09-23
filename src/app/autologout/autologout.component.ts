@@ -10,7 +10,7 @@ import { AutologoutService } from '../services/autologout.service';
 export class AutologoutComponent implements OnInit {
 
   constructor( private autoLogoutService: AutologoutService) {
-    localStorage.setItem('lastAction',Date.now().toString());
+    sessionStorage.setItem('lastAction',Date.now().toString());
    }
 
   ngOnInit() {
