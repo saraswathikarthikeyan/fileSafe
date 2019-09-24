@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription, fromEvent,from, merge, Observable  } from 'rxjs';
-import { subscribeOn } from 'rxjs/operators';
+import { Subscription, fromEvent,from, merge, Observable,throwError  } from 'rxjs';
+import { subscribeOn,map, catchError } from 'rxjs/operators';
 import { TimeInterval } from 'rxjs/internal/operators/timeInterval';
 import { AuthGuard } from '../auth.guard';
+import { HttpClient ,HttpHeaders, HttpErrorResponse, HttpEventType } from '@angular/common/http';
 
+const logOutUrl="http://localhost:3000/users";
 
 const MINUTES_UNITL_AUTO_LOGOUT = 5 // in mins
 const CHECK_INTERVAL = 15000 // in ms
@@ -26,7 +28,7 @@ export class AutologoutService {
   sessionStorage.setItem(STORE_KEY, lastAction.toString());
   }
 
-  constructor(private router: Router, private authGuard:AuthGuard) { 
+  constructor(private router: Router, private authGuard:AuthGuard,private http:HttpClient) { 
     this.check();
     this.initListener();
     this.initInterval();     
@@ -96,6 +98,10 @@ this.subscription.add( fromEvent(window,'close').subscribe(e => { this.clearSubs
     if(this.authGuard.isLoggedIn) {
 
       this.authGuard.editLoginStatus('Login');
+      
+      /*this.http.get<any>((logOutUrl+'/logout')).
+      pipe(map((data) => { console.log(data); })).pipe(catchError(this.handleError));*/
+  
      /* autologout */
      this.subscription.unsubscribe();
      clearInterval(this.handle);
@@ -105,6 +111,21 @@ this.subscription.add( fromEvent(window,'close').subscribe(e => { this.clearSubs
      this.router.navigate(['./login']);    
     }
   }
+
+  public handleError(error: HttpErrorResponse | any) {
+
+    let errMsg: string;
+  
+    if (error.error instanceof ErrorEvent) {
+      errMsg = error.error.message;
+    } else {
+      errMsg = `${error.status} - ${error.statusText || ''} ${error.error}`;
+    }
+  
+    return throwError(errMsg);
+  
+  }
+
 
   setLoginStatus(){
     if(this.authGuard.isLoggedIn)

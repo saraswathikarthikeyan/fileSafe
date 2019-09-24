@@ -20,6 +20,7 @@ export class LoginComponent implements OnInit {
 
   constructor(private loginFB: FormBuilder, public router:Router,
     private authGuard: AuthGuard, private loginService: LoginService ) {       
+      this.authGuard.editLoginStatus('Login');
       //Method creates the Form
       this.createLoginForm();
     }
@@ -102,9 +103,31 @@ export class LoginComponent implements OnInit {
     {
       console.log(this.loginModel);
 
+      this.errorMessage = "Processing..."
+
       //calls the service to validate the user controls
-      this.loginService.login(this.loginModel) ? this.router.navigate([this.returnUrl])  
-      : this.errorMessage = "Invalid User name or Password";
+      //this.loginService.loginWithBackend(this.loginModel) ? this.router.navigate([this.returnUrl])  
+     // : this.errorMessage = "Invalid User name or Password";
+     this.loginService.loginWithBackend(this.loginModel).subscribe((data => 
+      { if(data)
+        {
+          this.errorMessage ="";
+          this.router.navigate([this.returnUrl]);
+        }
+        else{
+          this.errorMessage = "Invalid User name or Password";
+        }
+      }
+     ), (err) => {this.errorMessage = "Invalid User name or Password"; }
+     );
+
+      /*if(this.loginService.loginWithBackend(this.loginModel).subscribe((data => console.log(data)))) {
+        this.errorMessage ="";
+        this.router.navigate([this.returnUrl]);
+      }
+      else {
+        this.errorMessage = "Invalid User name or Password";
+      }  */   
       
     }
     else{

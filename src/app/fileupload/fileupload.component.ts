@@ -67,9 +67,9 @@ export class FileuploadComponent implements OnInit {
       this.errorMessage ="";
       const formData = new FormData();
       formData.append('file', this.uploadFG.get('uploadfile').value);
-      /*
+      
       //code to send file to backend
-      let response = this.uploadService.upload(formData).subscribe(result => console.log(result),
+     /* let response = this.uploadService.upload(formData).subscribe(result => console.log(result),
       errMess => { this.errorMessage= <any>errMess;} );*/
 
       this.uploadFG.reset(
