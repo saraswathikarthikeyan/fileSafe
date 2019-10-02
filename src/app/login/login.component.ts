@@ -5,6 +5,7 @@ import { AuthGuard } from '../auth.guard';
 import { LoginService} from '../services/login.service';
 import { Router } from '@angular/router';
 import { from } from 'rxjs';
+import { NgxSpinnerService } from "ngx-spinner";
 
 @Component({
   selector: 'app-login',
@@ -19,13 +20,13 @@ export class LoginComponent implements OnInit {
   returnUrl: string = '/fileupload';
 
   constructor(private loginFB: FormBuilder, public router:Router,
-    private authGuard: AuthGuard, private loginService: LoginService ) {       
+    private authGuard: AuthGuard, private loginService: LoginService,private spinner: NgxSpinnerService ) {       
       this.authGuard.editLoginStatus('Login');
       //Method creates the Form
-      this.createLoginForm();
     }
 
-  ngOnInit() {    
+  ngOnInit() {  
+    this.createLoginForm();      
   }
   //Object contains the ErrorList for Form Controls
   formErrors = {
@@ -59,7 +60,7 @@ export class LoginComponent implements OnInit {
   }
 
   //Method triggers on Value changes and check for userInput
-  onValueChanged(data?: any) {
+  onValueChanged(data?: any):void {
 
     if(!this.loginFG) {return}
 
@@ -93,7 +94,7 @@ export class LoginComponent implements OnInit {
     }
 
     //Method calls on user clicks the Login Button
-  onSubmit(){
+  onSubmit():void{
 
     //Form group control value is assigned to the UserModel.
     this.loginModel = this.loginFG.value;
@@ -106,31 +107,27 @@ export class LoginComponent implements OnInit {
       this.errorMessage = "Processing..."
 
       //calls the service to validate the user controls
-      //this.loginService.loginWithBackend(this.loginModel) ? this.router.navigate([this.returnUrl])  
-     // : this.errorMessage = "Invalid User name or Password";
+     //this.spinner.show();
+
      this.loginService.loginWithBackend(this.loginModel).subscribe((data => 
-      { if(data)
-        {
-          this.errorMessage ="";
+      { 
+        //this.spinner.hide();
+        if(data.success)
+        { 
+          //on Successfull login user is transferred to File upload page.
+          this.errorMessage ="";          
           this.router.navigate([this.returnUrl]);
         }
         else{
           this.errorMessage = "Invalid User name or Password";
         }
       }
-     ), (err) => {this.errorMessage = "Invalid User name or Password"; }
+     ), (err) => { this.errorMessage = "Invalid User name or Password"; }
      );
-
-      /*if(this.loginService.loginWithBackend(this.loginModel).subscribe((data => console.log(data)))) {
-        this.errorMessage ="";
-        this.router.navigate([this.returnUrl]);
-      }
-      else {
-        this.errorMessage = "Invalid User name or Password";
-      }  */   
       
     }
     else{
+      //this.spinner.hide();
       this.errorMessage = "Invalid User name or Password";//sets error message when login model is Invalid
     }
 

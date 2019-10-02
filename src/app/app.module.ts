@@ -17,7 +17,6 @@ import { from } from 'rxjs';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
-import { UploadComponent } from './upload/upload.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { FileuploadComponent } from './fileupload/fileupload.component';
@@ -26,21 +25,21 @@ import  { AutologoutService } from './services/autologout.service';
 import  { LoginService } from './services/login.service';
 import  { UploadserviceService } from './services/uploadservice.service';
 import { AutologoutComponent } from './autologout/autologout.component';
+import { NgxSpinnerModule } from "ngx-spinner";
 
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    UploadComponent,
     HeaderComponent,
     FooterComponent,
     FileuploadComponent,
-    AutologoutComponent
+    AutologoutComponent,
   ],
   imports: [
     BrowserModule,
-    
+    NgxSpinnerModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,

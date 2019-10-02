@@ -25,6 +25,7 @@ public handleError(error: HttpErrorResponse | any) {
 
 }
 
+//Method called to upload file
 upload(Data: FormData): Observable<string> {
 console.log('meethod is called',Data);
   const httpOptions = {
@@ -40,6 +41,18 @@ console.log('meethod is called',Data);
 
 }
 
+//Method called on file upload page load to display the user file list
+fetchFiles(): Observable<any> {
+  const httpOptions = {
+    headers: new HttpHeaders ( {
+    'Type': 'GET',
+    'Authorization': 'Bearer '+ sessionStorage.getItem('token')
+  })
+};
+  return this.http.get<string>(uploadURL,httpOptions).pipe(map((data) => { return data } ))
+  .pipe(catchError(this.handleError));
+
+}
 
 
 }

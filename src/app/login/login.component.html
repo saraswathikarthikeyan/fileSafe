@@ -8,6 +8,10 @@
   <div class="labeldiv"></div>
   <div><p *ngIf="errorMessage" class="txtError">{{errorMessage}}</p></div>
 </div>
+<div class="formrow"> 
+  <div class="labeldiv"><ngx-spinner></ngx-spinner></div>
+  <div><ngx-spinner></ngx-spinner></div>
+</div>
 <div class="formrow">
     <div class="labeldiv"><label for="username" class="formlabel">User Name :</label></div>
     <div class="txtdiv"><input type="text" formControlName="username" placeholder="User Name" id="userName" class="formtextBox" required></div>

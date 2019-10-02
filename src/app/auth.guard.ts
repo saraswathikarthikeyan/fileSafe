@@ -40,7 +40,7 @@ public isLoggedIn(): boolean{
     return status;
 }
 
-public editLoginStatus(newStatus){
+public editLoginStatus(newStatus):void{
   this.loginStatus.next(newStatus);
 }
 

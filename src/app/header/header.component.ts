@@ -17,7 +17,7 @@ export class HeaderComponent implements OnInit {
   }
 
   
-  loginToggle(){
+  loginToggle(): void{
     if(!this.authGuard.isLoggedIn) {
       this.router.navigate(['./login']); 
     }

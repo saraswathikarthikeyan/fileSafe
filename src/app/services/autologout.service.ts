@@ -21,10 +21,11 @@ export class AutologoutService {
   subscription : Subscription;
   handle;
 
-  public getLastAction() {
+  public getLastAction() : number{
     return parseInt(sessionStorage.getItem(STORE_KEY));
   }
- public setLastAction(lastAction: number) {
+  
+ public setLastAction(lastAction: number): void {
   sessionStorage.setItem(STORE_KEY, lastAction.toString());
   }
 
@@ -35,11 +36,11 @@ export class AutologoutService {
     this.setLoginStatus();     
   }
 
-  reset() {
+  reset() : void{
     this.setLastAction(Date.now());
   }
 
-  init() {
+  init() : void{
     sessionStorage.setItem('lastAction',Date.now().toString());
     this.check();
     this.initListener();
@@ -47,7 +48,7 @@ export class AutologoutService {
  }
 
   
-initListener() {
+initListener(): void {
 const  events = [
     'scroll',
     'wheel',
@@ -73,7 +74,7 @@ this.subscription.add( fromEvent(window,'close').subscribe(e => { this.clearSubs
 
 }  
 
-  initInterval() {  
+  initInterval(): void {  
    this.handle = setInterval(() => { 
       this.check();
     }, CHECK_INTERVAL);
@@ -93,8 +94,7 @@ this.subscription.add( fromEvent(window,'close').subscribe(e => { this.clearSubs
     }
   }
 
-  clearSubscribeLogout()
-  {
+  clearSubscribeLogout() : void   {
     if(this.authGuard.isLoggedIn) {
 
       this.authGuard.editLoginStatus('Login');
@@ -127,7 +127,7 @@ this.subscription.add( fromEvent(window,'close').subscribe(e => { this.clearSubs
   }
 
 
-  setLoginStatus(){
+  setLoginStatus():void{
     if(this.authGuard.isLoggedIn)
     {
       this.authGuard.editLoginStatus("Logout");

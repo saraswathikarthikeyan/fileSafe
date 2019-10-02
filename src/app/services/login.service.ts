@@ -25,8 +25,7 @@ export class LoginService {
   }
   
 
-  setSession(token)
-  {
+  setSession(token):void  {
     this.authGuard.editLoginStatus('Logout');
     sessionStorage.setItem('isLoggedIn', "true");
     sessionStorage.setItem('token', token);
@@ -73,7 +72,7 @@ export class LoginService {
     pipe(map((data) => { this.setSession(data.token); console.log(data); return data.success; })).pipe(catchError(this.handleError));*/
  
     return this.http.post<any>((loginUrl+'/login'), userModel,httpOptions).
-    pipe(map((data) => { this.setSession(data.token); console.log(data); return data.success; })).pipe(catchError(this.handleError));
+    pipe(map((data) => { this.setSession(data.token); console.log(data); return data; })).pipe(catchError(this.handleError));
   }
 
 

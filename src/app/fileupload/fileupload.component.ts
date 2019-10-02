@@ -13,8 +13,6 @@ export class FileuploadComponent implements OnInit {
 
   uploadFG: FormGroup;
   errorMessage: string;
-  firstTime = Date.now();
-  lasttime = Date.now();
   show: true;
   subscription: Subscription;
 
@@ -39,6 +37,10 @@ export class FileuploadComponent implements OnInit {
       }
     });
 
+    this.uploadService.fetchFiles().subscribe((data)=>{
+      console.log(data);
+    }, (err)=> console.log(err));
+
   }
 
   //Creates the upload form
@@ -49,7 +51,7 @@ export class FileuploadComponent implements OnInit {
   }
 
   //On file change stores the file
-  onFileChange(event) {
+  onFileChange(event):void {
     if (event.target.files.length > 0) {
       this.fileSave = event.target.files[0];
       this.uploadFG.get('uploadfile').setValue(this.fileSave);
@@ -57,8 +59,8 @@ export class FileuploadComponent implements OnInit {
     }
   }
 
-
-  onUploadSubmit() {
+//Method called on upload button click
+  onUploadSubmit(): void {
 
     if (this.uploadFG.valid) {
       
@@ -69,8 +71,8 @@ export class FileuploadComponent implements OnInit {
       formData.append('file', this.uploadFG.get('uploadfile').value);
       
       //code to send file to backend
-     /* let response = this.uploadService.upload(formData).subscribe(result => console.log(result),
-      errMess => { this.errorMessage= <any>errMess;} );*/
+     let response = this.uploadService.upload(formData).subscribe(result => console.log(result),
+      errMess => { this.errorMessage= <any>errMess;} );
 
       this.uploadFG.reset(
         { uploadfile: [' '] }
