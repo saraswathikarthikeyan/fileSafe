@@ -39,7 +39,7 @@ export class FileuploadComponent implements OnInit {
 
     this.uploadService.fetchFiles().subscribe((data)=>{
       console.log(data.length);
-      
+      //Adds the file details to the cacheM to display records       
       data.map((d)=> this.cacheM.set(d.fileName,d.filepath) );
     }, (err)=> console.log(err));
 
